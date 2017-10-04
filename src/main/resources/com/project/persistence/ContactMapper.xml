@@ -49,7 +49,7 @@
     <select id="findRange" parameterType="int" resultMap="contactResultMap">
         SELECT *
         FROM contact
-        LIMIT #{param1},#{param2}
+        OFFSET #{param1} LIMIT #{param2}
     </select>
 
     <select id="size" resultType="Long">

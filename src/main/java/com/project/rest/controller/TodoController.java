@@ -9,7 +9,6 @@ import com.project.domain.response.PersonPageResponse;
 import com.project.service.ListsService;
 import com.project.service.NotesService;
 import com.project.service.PersonService;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;

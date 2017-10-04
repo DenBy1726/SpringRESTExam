@@ -57,7 +57,7 @@
     <select id="findRange" parameterType="int" resultMap="listsResultMap">
         SELECT *
         FROM list
-        LIMIT #{param1},#{param2}
+        OFFSET #{param1} LIMIT #{param2}
     </select>
 
     <select id="size" resultType="Long">
