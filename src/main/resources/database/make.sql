@@ -24,7 +24,7 @@ drop table notes;
 CREATE TABLE notes (
   id SERIAL NOT NULL PRIMARY KEY,
   name varchar(255) NOT NULL,
-  checkmark int NOT NULL,
+  checkmark boolean NOT NULL,
   listsid int NOT NULL
 );
 

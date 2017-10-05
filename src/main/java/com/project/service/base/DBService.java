@@ -3,6 +3,7 @@ package com.project.service.base;
 import com.project.domain.IEntity;
 import com.project.persistence.PersonMapper;
 import com.project.persistence.base.IMapper;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
