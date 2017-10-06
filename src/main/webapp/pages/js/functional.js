@@ -103,6 +103,7 @@ var onLoad = function() {
         GetCredential();
         setRoleText();
         onUpdate(0);
+        document.getElementById("defaultOpen").click();
 }
 
 //обновление всего

@@ -6,10 +6,13 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="pages/css/tab.css">
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="pages/js/functional.js"> </script>
+    <script src="pages/js/tab.js"></script>
+    <script src="pages/js/todo.js"></script>
 
 </head>
 <body onload="onLoad()" >
@@ -27,38 +30,43 @@
 
     <div class="container">
             <h3 id="header"></h3>
-        <form>
-            <div class="row">
-                <div class="col-xs-5">
-                    <input type="text" class="form-control" id="exampleInputName" placeholder="Name">
-                </div>
-                <div class="col-xs-5">
-                    <input type="text" class="form-control" id="exampleInputLastName" placeholder="Last name">
-                </div>
+
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'Person')"  id="defaultOpen">Person Page</button>
+            <button class="tablinks" onclick="openTab(event, 'TODO')">TODO Page</button>
+        </div>
+
+        <div id='Person' class="tabcontent">
+            <div class="jumbotron row">
+                <form>
+                    <div class="row">
+                            <input type="text" class="form-control" id="exampleInputName" placeholder="Name">
+                            <input type="text" class="form-control" id="exampleInputLastName" placeholder="Last name">
+                        <button type="button" class="btn btn-default" onclick="RestAdd()"><span class ="glyphicon glyphicon-ok"></span> Add</button>
+                    </div>
+                </form>
+                <table class="table table-striped">
+                    <thead>
+                    <tr class="active">
+
+                        <th>Name</th>
+                        <th>Last name</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody id="table" style="background: #ccc">
+
+                    </tbody>
+
+                </table>
+                <ul class="pagination" id="MyPager" onload="RestGetPageTest()"></ul>
             </div>
-            <br>
-            <button type="button" class="btn btn-default" onclick="RestAdd()"><span class ="glyphicon glyphicon-ok"></span> Add</button>
-            <br>
-        </form>
-        <br>
-        <div class="jumbotron row">
+        </div>
 
-            <table class="table table-striped">
-                <thead>
-                <tr class="active">
+        <div id="TODO" class="tabcontent">
+            <div id="tabTODO" class="tabTODO">
 
-                    <th>Name</th>
-                    <th>Last name</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody id="table" style="background: #ccc">
-
-                </tbody>
-
-            </table>
-            <ul class="pagination" id="MyPager" onload="RestGetPageTest()"></ul>
-
+            </div>
 
         </div>
 
