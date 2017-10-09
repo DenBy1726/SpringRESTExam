@@ -69,15 +69,23 @@ var UpdateTable = function(collection){
 
 
 //обновление панели пагинации
-var UpdatePager = function() {
+var UpdatePager = function(cur) {
     var str='<li>';
 
     for(var i =0; i<page.ammountOfPage; i++){
-        str+='<a href = "#" onclick="onUpdate('+i+')">'+i+'</a>';
-        str+='</li>';
-        str+='<li>';
+        if(cur !== undefined && cur == i){
+            str += '<a href = "#" onclick="onUpdate(' + i + ')" class="paginationCurrent">' + i + '</a>';
+        }
+        else {
+            str += '<a href = "#" onclick="onUpdate(' + i + ')">' + i + '</a>';
+        }
+        str += '</li>';
+        str += '<li>';
     }
     str+='</li>';
+
+
+
     document.getElementById("MyPager").innerHTML = str;
 }
 
@@ -118,7 +126,7 @@ var onUpdate = function(id) {
         async: true,
         success: function (result) {
             page = result;
-            UpdatePager(result);
+            UpdatePager(id);
             UpdateTable(result.data);
 
         },

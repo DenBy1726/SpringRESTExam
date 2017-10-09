@@ -49,9 +49,10 @@
     </delete>
 
     <delete id="deepDelete" parameterType="long">
-        DELETE FROM list,notes
-        USING list,notes
-        WHERE list.id = #{id} and notes.listsid = #{id}
+        DELETE FROM list
+        WHERE list.id = #{id};
+        DELETE FROM notes
+        WHERE notes.listsid = #{id};
     </delete>
 
     <select id="findRange" parameterType="int" resultMap="listsResultMap">

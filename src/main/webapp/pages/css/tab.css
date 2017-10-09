@@ -56,8 +56,8 @@ div.tabTODO {
     float: left;
     border: 1px solid #ccc;
     background-color: #f1f1f1;
-    width: 30%;
-    height: 300px;
+    width: 20%;
+    height: 100%;
 }
 
 /* Style the buttons inside the tab */
@@ -89,11 +89,10 @@ div.tabTODO button.active {
     float: left;
     padding: 0px 12px;
     border: 1px solid #ccc;
-    width: 70%;
-    border-left: none;
-    height: 300px;
+    width: 80%;
+    height: 100%;
 }
 
-td.close {
-    height: 45px;
+close {
+    text-align: right;
 }

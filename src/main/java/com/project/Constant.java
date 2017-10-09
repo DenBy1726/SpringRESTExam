@@ -10,5 +10,5 @@ public class Constant{
     public static final String DISPATCHER_SERVLET_NAME = "dispatcher";
 
     //размер страницы person
-    public static final int PERSON_PAGE_SIZE = 20;
+    public static final int PERSON_PAGE_SIZE = 10;
 }

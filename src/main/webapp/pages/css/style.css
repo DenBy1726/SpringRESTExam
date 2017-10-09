@@ -1,0 +1,32 @@
+.edit{
+    border: none;
+    border-bottom: 1px solid #888;
+    background-color: transparent;
+    padding: 5px 5px 5px 5px;
+    width: 95%;
+    font-style: italic;
+    margin: 5px 5px 5px 15px;
+    outline: none;
+}
+
+.edit:focus{
+    border-bottom: 2px solid rgba(81, 203, 238, 1);
+}
+
+.personBack{
+    background-color: #f1f1f1;
+}
+
+.tablePerson {
+    margin-bottom: 0;
+}
+
+.pagination {
+    margin-bottom: 0;
+    margin-top: 5px;
+}
+
+
+.paginationCurrent {
+    border-bottom: 10px solid #ccc !important;
+}
