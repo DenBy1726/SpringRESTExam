@@ -1,6 +1,6 @@
 var todoprefix = '/todo';
 var todoList = null;
-var todoNode = null;
+var todoNote = null;
 //меняет флаг первой записи в первом списке на true.
 var Mark = function() {
     var JSONObject= {
@@ -66,7 +66,7 @@ function openTabTODO(evt,tabName,id) {
             contentType: 'application/json; charset=utf-8',
             async: false,
             success: function(result){
-                todoNode = result;
+                todoNote = result;
                 sortTODONote();
                 updateNotes(id,evt);
             },
@@ -81,10 +81,10 @@ function openTabTODO(evt,tabName,id) {
 //изменяет флажок на выбранной записи
 function checkUpdate(tabId,id)
 {
-    todoNode[id].checkmark = !todoNode[id].checkmark;
+    todoNote[id].checkmark = !todoNote[id].checkmark;
     var JSONObject= {
-        'id': todoNode[id].id,//ид записи которою меняем
-        'checkmark': todoNode[id].checkmark
+        'id': todoNote[id].id,//ид записи которою меняем
+        'checkmark': todoNote[id].checkmark
     };
     $.ajax({
         type: 'PUT',
@@ -144,27 +144,27 @@ function updateNotes(id,evt)
 
     rez += '<table width="100%">';
     //заполняем содержимым
-    for(i=0;i<todoNode.length;i++) {
+    for(i=0; i<todoNote.length; i++) {
         //добавляем записи с названиями  тодо и кнопку удалить для каждой записи
         rez += '<tr><td>';
 
         rez += '<input type="checkbox" onclick=checkUpdate('+ (id+','+i) +') ';
-        if (todoNode[i].checkmark == true)
+        if (todoNote[i].checkmark == true)
             rez += ' checked';
-        if(todoNode[i].checkmark == true)
-            rez +='><del>'+ todoNode[i].name + '</del><br>';
+        if(todoNote[i].checkmark == true)
+            rez +='><del>'+ todoNote[i].name + '</del><br>';
         else
-            rez += '>' + todoNode[i].name + '<br>';
+            rez += '>' + todoNote[i].name + '<br>';
 
         rez += '</td><td>';
-        rez += '<button class="glyphicon glyphicon-remove close" onclick=deleteNoteTODO('+id+','+ todoNode[i].id + ')></button>';
+        rez += '<button class="glyphicon glyphicon-remove close" onclick=deleteNoteTODO('+id+','+ todoNote[i].id + ')></button>';
         rez += '</td>';
         rez += '</tr>';
     }
     rez += '</table>';
 
     //добавим кнопку добавить
-    rez += '<button class="tablinksTODO" onclick="addNoteTodo('+id+')" >' + "Добавить" +'</button>';
+    rez += '<button class="tablinksTODO btn btn-default" onclick="addNoteTODO('+id+')" >' + "Добавить" +'</button>';
 
     document.getElementById('tab' + id).innerHTML = rez;
 
@@ -188,10 +188,10 @@ function updateNotes(id,evt)
 
 function sortTODONote()
 {
-    if(todoNode === null)
+    if(todoNote === null)
         return;
 
-    var checkedTodo = todoNode.filter(function(val)
+    var checkedTodo = todoNote.filter(function(val)
         {
             if(val.checkmark === true)
                 return val;
@@ -204,7 +204,7 @@ function sortTODONote()
         }
     );
 
-    var unCheckedTodo = todoNode.filter(function(val)
+    var unCheckedTodo = todoNote.filter(function(val)
         {
             if(val.checkmark === false)
                 return val;
@@ -217,107 +217,144 @@ function sortTODONote()
         }
     );
 
-    todoNode = unCheckedTodo.concat(checkedTodo);
+    todoNote = unCheckedTodo.concat(checkedTodo);
 
 }
 
 function addTabTODO()
 {
-    var rez = prompt("Веедите название вкладки");
-    if(rez === null || rez === "")
-        return;
+    showDialogTODOList();
+    var listener = function() {
+        var rez = document.getElementById('return_valueTODO').value;
+        if(rez === null || rez === "" || rez === undefined)
+            return;
+        $.ajax({
+            type: 'POST',
+            url:  todoprefix + '/' , //ид списка в котором запись
+            contentType: 'application/json; charset=utf-8',
+            data: rez,
+            dataType: 'json',
+            async: true,
+            success: function(result) {
+                todoList.push(result);
+                updatePages();
+                document.getElementById("tablinksTODO" + (todoList.length-1)).click();
+                document.getElementById('submitTODO').removeEventListener('click',listener,false);
+                document.getElementById("cancelTODO").click();
 
-    $.ajax({
-        type: 'POST',
-        url:  todoprefix + '/' , //ид списка в котором запись
-        contentType: 'application/json; charset=utf-8',
-        data: rez,
-        dataType: 'json',
-        async: true,
-        success: function(result) {
-            todoList.push(result);
-            updatePages();
-            document.getElementById("tablinksTODO" + (todoList.length-1)).click();
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            alert(jqXHR.status + ' ' + jqXHR.responseText + ' ' + textStatus + ' ' + errorThrown);
-        }
-    });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert(jqXHR.status + ' ' + jqXHR.responseText + ' ' + textStatus + ' ' + errorThrown);
+            }
+        });
+    };
+    document.getElementById('submitTODO').addEventListener('click',listener,false );
+
+
 }
 
-function addNoteTodo(id){
-    var rez = prompt("Веедите название задания");
-    if(rez === null || rez === "")
-        return;
+function addNoteTODO(id){
+    showDialogTODONote();
+    var listener = function() {
+        var rez = document.getElementById('return_valueTODO').value;
+        if(rez === null || rez === "" || rez === undefined)
+            return;
+        $.ajax({
+            type: 'POST',
+            url: todoprefix + '/' + todoList[id].id, //ид списка в котором запись
+            contentType: 'application/json; charset=utf-8',
+            data: rez,
+            dataType: 'json',
+            async: true,
+            success: function (result) {
+                todoNote.push(result);
+                updateNotes(id);
+                document.getElementById('submitTODO').removeEventListener('click',listener,false);
+                document.getElementById("cancelTODO").click();
 
-    $.ajax({
-        type: 'POST',
-        url:  todoprefix + '/' + todoList[id].id , //ид списка в котором запись
-        contentType: 'application/json; charset=utf-8',
-        data: rez,
-        dataType: 'json',
-        async: true,
-        success: function(result) {
-            todoNode.push(result);
-            updateNotes(id);
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            alert(jqXHR.status + ' ' + jqXHR.responseText + ' ' + textStatus + ' ' + errorThrown);
-        }
-    });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert(jqXHR.status + ' ' + jqXHR.responseText + ' ' + textStatus + ' ' + errorThrown);
+            }
+        });
+    };
+    document.getElementById('submitTODO').addEventListener('click',listener,false);
 }
 
 function deleteTabTODO(id)
 {
     if(id < 0)
         return;
-
-    $.ajax({
-        type: 'DELETE',
-        url:  todoprefix + '/' , //ид списка в котором запись
-        contentType: 'application/json; charset=utf-8',
-        data: id.toString(),
-        dataType: 'json',
-        async: true,
-        success: function(result) {
-           todoList = todoList.filter(
-               function (val) {
-                   return val.id != result;
-               }
-           );
-            updatePages();
-            if(todoList.length > 0) {
-                document.getElementById("tablinksTODO0").click();
-            }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            alert(jqXHR.status + ' ' + jqXHR.responseText + ' ' + textStatus + ' ' + errorThrown);
-        }
+    var name = "";
+    todoList.forEach(function(val)
+    {
+        if(val.id === id)
+            name = val.name;
     });
+    showDialogTODOListSubmit(name);
+    var listener = function () {
+        $.ajax({
+            type: 'DELETE',
+            url:  todoprefix + '/' , //ид списка в котором запись
+            contentType: 'application/json; charset=utf-8',
+            data: id.toString(),
+            dataType: 'json',
+            async: true,
+            success: function(result) {
+                todoList = todoList.filter(
+                    function (val) {
+                        return val.id != result;
+                    }
+                );
+                updatePages();
+                if(todoList.length > 0) {
+                    document.getElementById("tablinksTODO0").click();
+                }
+                document.getElementById('submitTODONote').removeEventListener('click',listener,false);
+                document.getElementById("cancelTODONote").click();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert(jqXHR.status + ' ' + jqXHR.responseText + ' ' + textStatus + ' ' + errorThrown);
+            }
+        });
+    };
+    document.getElementById('submitTODONote').addEventListener('click',listener,false);
+
 }
 
 function deleteNoteTODO(id,note)
 {
     if(id < 0 || note<0)
         return;
-
-    $.ajax({
-        type: 'DELETE',
-        url:  todoprefix + '/' + todoList[id].id , //ид списка в котором запись
-        contentType: 'application/json; charset=utf-8',
-        data: note.toString(),
-        dataType: 'json',
-        async: true,
-        success: function(result) {
-            todoNode = todoNode.filter(
-                function (val) {
-                    return val.id != result;
-                }
-            );
-            updateNotes(id);
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            alert(jqXHR.status + ' ' + jqXHR.responseText + ' ' + textStatus + ' ' + errorThrown);
-        }
+    var name = "";
+    todoList.forEach(function(val)
+    {
+        if(val.id === id)
+            name = val.name;
     });
+    showDialogTODONoteSubmit(name);
+    var listener = function () {
+        $.ajax({
+            type: 'DELETE',
+            url: todoprefix + '/' + todoList[id].id, //ид списка в котором запись
+            contentType: 'application/json; charset=utf-8',
+            data: note.toString(),
+            dataType: 'json',
+            async: true,
+            success: function (result) {
+                todoNote = todoNote.filter(
+                    function (val) {
+                        return val.id != result;
+                    }
+                );
+                updateNotes(id);
+                document.getElementById('submitTODONote').removeEventListener('click',listener,false);
+                document.getElementById("cancelTODONote").click();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert(jqXHR.status + ' ' + jqXHR.responseText + ' ' + textStatus + ' ' + errorThrown);
+            }
+        });
+    };
+    document.getElementById('submitTODONote').addEventListener('click',listener,false);
 }

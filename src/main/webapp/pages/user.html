@@ -17,6 +17,8 @@
 
 </head>
 <body onload="onLoad()" >
+
+
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -63,7 +65,6 @@
                 <ul class="pagination" id="MyPager" ></ul>
             </div>
         </div>
-
         <div id="TODO" class="tabcontent">
             <div id="tabTODO" class="tabTODO">
 
@@ -72,5 +73,86 @@
         </div>
 
     </div>
+
+    <dialog id="inputDialog">
+        <button id="cancelTODO" class="glyphicon glyphicon-remove close" type="reset"></button>
+        <p></p>
+
+        <input type="text" id="return_valueTODO" class="edit" value="">
+        <button id="submitTODO" class ="btn btn-default"></button>
+        <script>
+            function showDialogTODOList() {
+                var dialog = document.getElementById('inputDialog');
+                dialog.querySelector('p').textContent = 'Введите название вкладки';
+                dialog.querySelector('#return_valueTODO').placeholder = 'Название новой вкладки';
+                dialog.querySelector('#submitTODO').textContent = 'Создать вкладку';
+                dialog.showModal();
+            }
+            function showDialogTODONote() {
+                var dialog = document.getElementById('inputDialog');
+                dialog.querySelector('p').textContent = 'Введите название задачи';
+                dialog.querySelector('#return_valueTODO').value = '';
+                dialog.querySelector('#return_valueTODO').placeholder = 'Название новой задачи';
+                dialog.querySelector('#submitTODO').textContent = 'Создать задачу';
+                dialog.showModal();
+            }
+            document.querySelector('button#cancelTODO').onclick = function() {
+                var dialog = document.getElementById('inputDialog');
+                dialog.querySelector('#return_valueTODO').value = '';
+                dialog.close();
+            };
+        </script>
+
+    </dialog>
+    <dialog id="submitDialog">
+        <button id="cancelTODONote" class="glyphicon glyphicon-remove close" type="reset"></button>
+        <p></p>
+        <input type="text" id="return_valueTODONote" class="edit" value="" hidden>
+        <div>
+            <button id="submitTODONote" class ="btn btn-default">ОК</button>
+            <button id="cancelTODONote2" class ="btn btn-cancel">Отмена</button>
+        </div>
+        <script>
+            function showDialogTODOListSubmit(tabname) {
+                var dialog = document.getElementById('submitDialog');
+                dialog.querySelector('p').textContent = 'Вы точно уверены что хоитте удалить вкладку '+ tabname + ' ?' +
+                    'изменения нельзя будет отменить';
+                dialog.showModal();
+            }
+            function showDialogTODONoteSubmit(notename) {
+                var dialog = document.getElementById('submitDialog');
+                dialog.querySelector('p').textContent = 'Вы точно уверены что хоитте удалить задачу '+ notename + ' ?' +
+                    'изменения нельзя будет отменить';
+                dialog.showModal();
+            }
+
+            function cancelInput() {
+                var dialog = document.getElementById('submitDialog');
+                document.getElementById('submitTODONote').value=false;
+                if(dialog.open === true)
+                     dialog.close();
+            }
+
+            function submitInput() {
+                var dialog = document.getElementById('submitDialog');
+                document.getElementById('submitTODONote').value=true;
+                if(dialog.open === true)
+                    dialog.close();
+            }
+
+            document.querySelector('button#cancelTODONote').onclick = function() {
+                cancelInput();
+            };
+
+            document.querySelector('button#cancelTODONote2').onclick = function() {
+                cancelInput();
+            };
+
+            document.querySelector('button#submitTODONote').onclick = function() {
+                submitInput();
+            };
+        </script>
+    </dialog>
+
 </body>
 </html>
