@@ -1,31 +1,10 @@
 var todoprefix = '/todo';
 var todoList = null;
 var todoNote = null;
-//меняет флаг первой записи в первом списке на true.
-var Mark = function() {
-    var JSONObject= {
-        'id': 1,//ид записи которою меняем
-        'checkmark': true
-    };
-    $.ajax({
-        type: 'PUT',
-        url:  todoprefix + '/' + 1, //ид списка в котором запись
-        contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify(JSONObject),
-        dataType: 'text',
-        async: true,
-        success: function(result) {
-            alert(result);
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            alert(jqXHR.status + ' ' + jqXHR.responseText + ' ' + textStatus + ' ' + errorThrown);
-        }
-    });
-}
 
-//формируем панель для отображения тодо
-var GetTODOList = function()
-{
+//1)получить список тодо
+//2)формируем панель для отображения тодо
+function GetTODOList() {
     $.ajax(
         {
             type: 'GET',
@@ -43,21 +22,19 @@ var GetTODOList = function()
     );
 }
 
-//загрузка тодо
-var onLoadTODO = function() {
+//обработчик события загрузки списка тодо
+function onLoadTODO() {
     GetTODOList();
     if(todoList.length > 0)
     {
-        //GetNoteList();
         //активируем первую вкладку тодо если есть
         document.getElementById("tablinksTODO0").click();
        // openTabTODO(0);
     }
-
-
 }
 
-//загружаем вкладку с номером id
+//1)загружаем вкладку тодо с номером id
+//2)формируем панель для отображения записей в тодо
 function openTabTODO(evt,tabName,id) {
     $.ajax(
         {
@@ -67,7 +44,6 @@ function openTabTODO(evt,tabName,id) {
             async: false,
             success: function(result){
                 todoNote = result;
-                sortTODONote();
                 updateNotes(id,evt);
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -75,12 +51,13 @@ function openTabTODO(evt,tabName,id) {
             }
         }
     );
-
 }
 
 //изменяет флажок на выбранной записи
-function checkUpdate(tabId,id)
-{
+//1)меняем флаг задачи
+//2)отправляем изменения на сервер
+//3)формируем панель для отображения записей в тодо
+function checkUpdate(tabId,id) {
     todoNote[id].checkmark = !todoNote[id].checkmark;
     var JSONObject= {
         'id': todoNote[id].id,//ид записи которою меняем
@@ -103,39 +80,59 @@ function checkUpdate(tabId,id)
     updateNotes(tabId);
 }
 
-function updatePages()
-{
+//обновление панели для отображения тодо
+function updatePages() {
     rez = '';
     rez2 = '';
 
-    document.getElementById("TODO").innerHTML = '<div id="tabTODO" class="tabTODO"></div>'
+    //получаем элемент вкладки тодо
+    var TODO = document.getElementById("TODO");
+    TODO.innerHTML = "";
 
-    rez += '<table width="100%">';
+    //создаем контейнер для отрисовки тодо
+    var tabTODO = document.createElement("div");
+    tabTODO.id = "tabTODO";
+    tabTODO.classList.add("tabTODO");
+    TODO.appendChild(tabTODO);
+
+    //создвем таблицу
+    var table = document.createElement("table");
+    table.width = "100%";
+
+    tabTODO.appendChild(table);
+
     for(var i=0;i<todoList.length;i++){
-        rez += '<tr class="tabTR">';
-        //добавляем вкладки с названиями категории тодо и кнопку удалить вкладку
-        rez += '<td>';
-        rez +='<button class="tablinksTODO" id="tablinksTODO'+ i +'" onclick="openTabTODO(event, tab'+i+','+i+')" >' + todoList[i].name + '</button>';
-        rez += '</td><td>';
-        rez += '<button class="glyphicon glyphicon-remove close" onclick="deleteTabTODO('+todoList[i].id+')"></button>';
-        rez += '</td>';
-        rez += '</tr>';
+
+        var tr = document.createElement("tr");
+        tr.classList.add("tabTR");
+        table.appendChild(tr);
+
+        var td1 = document.createElement("td");
+        tr.appendChild(td1);
+
+        td1.innerHTML = '<button class="tablinksTODO" id="tablinksTODO'+i+'" onclick="openTabTODO(event,tab'+i+','+i+')">'+todoList[i].name+'</button>';
+
+        var td2 = document.createElement("td");
+        tr.appendChild(td2);
+
+        td2.innerHTML = '<button class="glyphicon glyphicon-remove close close2" onclick="deleteTabTODO(todoList['+i+'].id)"></button>';
+
+
 
         //добавляем поля для отображения списка тодо
-        rez2 += '   <div id="tab'+i+'"  class="tabcontentTODO">\n' + '</div>';
+        var tab = document.createElement("div");
+        tab.id = "tab" + i;
+        tab.classList.add("tabcontentTODO");
+        TODO.appendChild(tab);
     }
 
-    rez += '</table>';
-
-    //добавим кнопку добавить
-    rez += '<button class="tablinksTODO" onclick="addTabTODO()" >' + "Добавить" +'</button>';
-
-    document.getElementById("tabTODO").innerHTML = rez;
-    document.getElementById("TODO").innerHTML += rez2;
+    tabTODO.innerHTML += '<button class="tablinksTODO" onclick="addTabTODO()" >Добавить</button>';
 
 }
 
 //Обновляет список всех записей для текущего тодо
+//1)форматируем для вывода
+//
 function updateNotes(id,evt)
 {
     sortTODONote();
@@ -177,13 +174,13 @@ function updateNotes(id,evt)
     // Get all elements with class="tablinks" and remove the class "active"
     tablinks = document.getElementsByClassName("tablinksTODO");
     for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
+        tablinks[i].parentNode.parentNode.className = tablinks[i].parentNode.parentNode.className.replace(" active", "");
     }
 
     // Show the current tab, and add an "active" class to the link that opened the tab
     document.getElementById('tab' + id).style.display = "block";
     if(typeof evt != 'undefined')
-        evt.currentTarget.className += " active";
+        evt.currentTarget.parentNode.parentNode.className += " active";
 }
 
 function sortTODONote()

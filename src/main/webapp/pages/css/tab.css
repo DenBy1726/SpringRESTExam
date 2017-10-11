@@ -27,6 +27,15 @@ div.tab button.active {
     background-color: #ccc;
 }
 
+/* Create an active/current tablink class */
+tr.active {
+    background-color: #ccc;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+
 /* Style the tab content */
 div.tab.tabcontent {
     display: none;
@@ -87,7 +96,6 @@ div.tabTODO button.active {
 /* Style the tab content */
 .tabcontentTODO {
     float: left;
-    padding: 0px 12px;
     border: 1px solid #ccc;
     width: 80%;
     height: 100%;
